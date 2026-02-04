@@ -7,7 +7,7 @@ import (
 )
 
 func logCart(c cart.Cart) {
-	fmt.Printf("Cart ID: %d\n", cart.GetID(c))
+	fmt.Printf("Cart ID: %s\n", cart.GetID(c))
 	fmt.Printf("Customer ID: %s\n", cart.GetCustomerID(c))
 	cItems := cart.GetItems(c)
 	cItemsLog := ""

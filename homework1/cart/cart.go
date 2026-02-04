@@ -11,7 +11,7 @@ import (
 )
 
 type Cart struct {
-	id uint32
+	id string
 	customerID string
 	items map[string]int
 }
@@ -20,13 +20,20 @@ var validCustomerID = regexp.MustCompile(`^[a-zA-Z]{3}[0-9]{5}[a-zA-Z]{2}-[AQ]`)
 func isValidCustomerID(customerID string) bool {
 	return validCustomerID.MatchString(customerID)
 }
+
 func NewCart(customerID string) (Cart, bool) {
 	if !isValidCustomerID(customerID) {
 		fmt.Printf("New Cart failed. Provided customer ID %s is invalid\n", customerID)
 		return Cart{}, false
 	}
 
-	newID := uuid.New().ID()
+	newID := uuid.New().String()
+
+	if newID == "" {
+		fmt.Println("New Cart failed. UUID generated was invalid")
+		return Cart{}, false
+	}
+
 	return Cart{
 		id: newID,
 		customerID: customerID,
@@ -38,8 +45,8 @@ func GetCustomerID(cart Cart) string {
 	return strings.Clone(cart.customerID)
 }
 
-func GetID(cart Cart) uint32 {
-	return cart.id
+func GetID(cart Cart) string {
+	return strings.Clone(cart.id)
 }
 
 func GetItems(cart Cart) map[string]int {
@@ -81,7 +88,8 @@ func GetTotalCost(cart Cart) (float64, bool) {
 		itemCost, success := server.GetItemCost(item)
 
 		if (!success) {
-			fmt.Printf("Get Item Cost failed. Provided item %s not found in the current catalog\n", item)
+			fmt.Printf("Get Total Cost failed. Provided item %s not found in the current catalog\n", item)
+			return 0.0, false
 		}
 
 		if !passesCostBoundsCheck(itemCost) {
@@ -128,7 +136,7 @@ func UpdateItem(cart Cart, item string, quantity int) (Cart, bool) {
 	}
 
 	return Cart{
-		id: uint32(GetID(cart)),
+		id: GetID(cart),
 		customerID: GetCustomerID(cart),
 		items: cartItems,
 	}, true
@@ -161,13 +169,12 @@ func AddItem(cart Cart, item string, quantity int) (Cart, bool) {
 			fmt.Printf("Add Item failed. Attempt to add will result in an invalid quantity of %s to the cart\n", item)
 			return cart, false
 		}
-		cartItems[itemKey] = existingQuantity + quantity
 	} else {
 		cartItems[itemKey] = quantity
 	}
 
 	return Cart{
-		id: uint32(GetID(cart)),
+		id: GetID(cart),
 		customerID: GetCustomerID(cart),
 		items: cartItems,
 	}, true
@@ -189,7 +196,7 @@ func RemoveItem(cart Cart, item string) (Cart, bool) {
 	}
 
 	return Cart{
-		id: uint32(GetID(cart)),
+		id: GetID(cart),
 		customerID: GetCustomerID(cart),
 		items: cartItems,
 	}, true
