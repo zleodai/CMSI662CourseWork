@@ -14,17 +14,22 @@ type Cart struct {
 	items map[string]int
 }
 
-var validCustomerID = regexp.MustCompile(`^[a-z]{3}[0-9]{5}[a-z]{2}-[AQ]`)
+var validCustomerID = regexp.MustCompile(`^[a-zA-Z]{3}[0-9]{5}[a-zA-Z]{2}-[AQ]`)
 func isValidCustomerID(customerID string) bool {
-	valid := validCustomerID.MatchString(customerID)
+	return validCustomerID.MatchString(customerID)
 }
-func NewCart(customerID string) Cart {
+func NewCart(customerID string) (Cart, bool) {
+	if !isValidCustomerID(customerID) {
+		fmt.Printf("New Cart failed. Provided customer ID %s is invalid\n", customerID)
+		return Cart{}, false
+	}
+
 	newID := uuid.New().ID()
 	return Cart{
 		id: newID,
 		customerID: customerID,
 		items: make(map[string]int),
-	}
+	}, true
 }
 
 func GetCustomerID(cart Cart) string {
