@@ -17,17 +17,25 @@ func logCart(c cart.Cart) {
 }
 
 func main() {
-	testCart := cart.NewCart("testCustomer")
-	testCart, success := cart.AddItem(testCart, "apple", 5)
-	testCart, success = cart.AddItem(testCart, "banana", 10)
-	testCart, success = cart.AddItem(testCart, "orange", 1)
-	testCart, success = cart.RemoveItem(testCart, "orange")
+	testCart, sucess := cart.NewCart("Abc12345de-Q")
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "apple", 5)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "banana", 10)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "orange", 1)
+	if !sucess { return }
+
+	testCart, sucess = cart.RemoveItem(testCart, "orange")
+	if !sucess { return }
+	
 	logCart(testCart)
 
-	totalCost, success := cart.GetTotalCost(testCart)
-	if success {
-		fmt.Printf("Total Cost: $%.2f\n", totalCost)
-	} else {
-		fmt.Println("Failed to calculate total cost.")
-	}
+	totalCost, sucess := cart.GetTotalCost(testCart)
+	if !sucess { return }
+
+	fmt.Printf("Total Cost: $%.2f\n", totalCost)
 }
