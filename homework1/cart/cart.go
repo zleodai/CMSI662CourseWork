@@ -1,6 +1,8 @@
 package cart
 
 import (
+	"cartmodule/server"
+
 	"fmt"
 	"regexp"
 	"strings"
@@ -49,6 +51,22 @@ func GetItems(cart Cart) map[string]int {
 	return items
 }
 
+const maxStringLength = 100
+var validItemName = regexp.MustCompile(`^[a-zA-Z ]+$`)
+func passesItemNameCheck(item string) bool {
+	if len(item) > maxStringLength {
+		fmt.Printf("Item Name Check Failed. Item name exceeded max string length of %d\n", maxStringLength)
+		return false
+	}
+
+	if !validItemName.MatchString(item) {
+		fmt.Println("Item Name Check Failed. Item name not valid")
+		return false
+	}
+
+	return true
+}
+
 const costLowerBound float64 = 0.00
 const costUpperBound float64 = 1000000000.00
 func passesCostBoundsCheck(cost float64) bool {
@@ -59,15 +77,19 @@ func GetTotalCost(cart Cart) (float64, bool) {
 	totalCost := 0.0
 	
 	cartItems := GetItems(cart)
-	for _, quantity := range cartItems {
-		itemCost := 1.00
+	for item, quantity := range cartItems {
+		itemCost, success := server.GetItemCost(item)
+
+		if (!success) {
+			fmt.Printf("Get Item Cost failed. Provided item %s not found in the current catalog\n", item)
+		}
 
 		if !passesCostBoundsCheck(itemCost) {
 			fmt.Printf("Get Total Cost failed. Item cost %f is out of bounds\n", itemCost)
 			return 0.0, false
 		}
 
-		totalCost += float64(quantity) * 1.00
+		totalCost += float64(quantity) * itemCost
 	}
 
 	if passesCostBoundsCheck(totalCost) {
@@ -87,6 +109,11 @@ func passesItemBoundsCheck(quantity int) bool {
 func UpdateItem(cart Cart, item string, quantity int) (Cart, bool) {
 	if !passesItemBoundsCheck(quantity) {
 		fmt.Printf("Update Item failed. Attempted to add an invalid quantity of %s to the cart\n", item)
+		return cart, false
+	}
+	
+	if !passesItemNameCheck(item) {
+		fmt.Println("Update Item failed.")
 		return cart, false
 	}
 
@@ -110,6 +137,16 @@ func UpdateItem(cart Cart, item string, quantity int) (Cart, bool) {
 func AddItem(cart Cart, item string, quantity int) (Cart, bool) {
 	if !passesItemBoundsCheck(quantity) {
 		fmt.Printf("Add Item failed. Attempted to add an invalid quantity of %s to the cart\n", item)
+		return cart, false
+	}
+
+	if !passesItemNameCheck(item) {
+		fmt.Println("Add Item failed.")
+		return cart, false
+	}
+
+	if !server.IsValidItem(item) {
+		fmt.Printf("Add Item failed. Item %s was not in the catalog.\n", item)
 		return cart, false
 	}
 
@@ -137,6 +174,11 @@ func AddItem(cart Cart, item string, quantity int) (Cart, bool) {
 }
 
 func RemoveItem(cart Cart, item string) (Cart, bool) {
+	if !passesItemNameCheck(item) {
+		fmt.Println("Update Item failed.")
+		return cart, false
+	}
+
 	cartItems := GetItems(cart)
 
 	if _, exists := cartItems[item]; exists {

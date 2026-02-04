@@ -2,6 +2,7 @@ package main
 
 import (
 	"cartmodule/cart"
+
 	"fmt"
 )
 
@@ -26,10 +27,22 @@ func main() {
 	testCart, sucess = cart.AddItem(testCart, "banana", 10)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "orange", 1)
+	testCart, sucess = cart.AddItem(testCart, "potato", 12)
 	if !sucess { return }
 
-	testCart, sucess = cart.RemoveItem(testCart, "orange")
+	testCart, sucess = cart.AddItem(testCart, "broccoli", 3)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "milk", 1)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "eggs", 1)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "beef", 2)
+	if !sucess { return }
+
+	testCart, sucess = cart.AddItem(testCart, "bread", 3)
 	if !sucess { return }
 	
 	logCart(testCart)
