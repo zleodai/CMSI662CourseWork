@@ -5,7 +5,6 @@ import (
 
 	"fmt"
 	"regexp"
-	"strings"
 
 	"github.com/google/uuid"
 )
@@ -42,17 +41,17 @@ func NewCart(customerID string) (Cart, bool) {
 }
 
 func GetCustomerID(cart Cart) string {
-	return strings.Clone(cart.customerID)
+	return cart.customerID
 }
 
 func GetID(cart Cart) string {
-	return strings.Clone(cart.id)
+	return cart.id
 }
 
 func GetItems(cart Cart) map[string]int {
 	items := make(map[string]int)
 	for k, v := range cart.items {
-		key := strings.Clone(k)
+		key := k
 		items[key] = v
 	}
 	return items
@@ -114,90 +113,74 @@ func passesItemBoundsCheck(quantity int) bool {
 	return quantity >= itemQuantityLowerBound && quantity <= itemQuantityUpperBound
 }
 
-func UpdateItem(cart Cart, item string, quantity int) (Cart, bool) {
+func UpdateItem(cart *Cart, item string, quantity int) bool {
 	if !passesItemBoundsCheck(quantity) {
 		fmt.Printf("Update Item failed. Attempted to add an invalid quantity of %s to the cart\n", item)
-		return cart, false
+		return false
 	}
 	
 	if !passesItemNameCheck(item) {
 		fmt.Println("Update Item failed.")
-		return cart, false
+		return false
 	}
 
-	cartItems := GetItems(cart)
-	itemKey := strings.Clone(item)
+	cartItems := cart.items
 
-	if _, exists := cartItems[itemKey]; exists {
-		cartItems[itemKey] = quantity
-	} else {
+	if _, exists := cartItems[item]; !exists {
 		fmt.Printf("Update Item failed. Attempted to update non-existent item %s in the cart\n", item)
-		return cart, false
+		return false
+	} else {
+		cartItems[item] = quantity
+		return true
 	}
-
-	return Cart{
-		id: GetID(cart),
-		customerID: GetCustomerID(cart),
-		items: cartItems,
-	}, true
 }
 
-func AddItem(cart Cart, item string, quantity int) (Cart, bool) {
+func AddItem(cart *Cart, item string, quantity int) bool {
 	if !passesItemBoundsCheck(quantity) {
 		fmt.Printf("Add Item failed. Attempted to add an invalid quantity of %s to the cart\n", item)
-		return cart, false
+		return false
 	}
 
 	if !passesItemNameCheck(item) {
 		fmt.Println("Add Item failed.")
-		return cart, false
+		return false
 	}
 
 	if !server.IsValidItem(item) {
 		fmt.Printf("Add Item failed. Item %s was not in the catalog.\n", item)
-		return cart, false
+		return false
 	}
 
-	cartItems := GetItems(cart)
-	itemKey := strings.Clone(item)
+	cartItems := cart.items
 
-	if existingQuantity, exists := cartItems[itemKey]; exists {
+	if existingQuantity, exists := cartItems[item]; !exists {
 		newCount := existingQuantity + quantity
-		if passesItemBoundsCheck(newCount) {
-			cartItems[itemKey] = newCount
-		} else {
+		if !passesItemBoundsCheck(newCount) {
 			fmt.Printf("Add Item failed. Attempt to add will result in an invalid quantity of %s to the cart\n", item)
-			return cart, false
+			return false
+		} else {
+			cartItems[item] = newCount
+			return true
 		}
 	} else {
-		cartItems[itemKey] = quantity
+		cartItems[item] = quantity
+		return true
 	}
-
-	return Cart{
-		id: GetID(cart),
-		customerID: GetCustomerID(cart),
-		items: cartItems,
-	}, true
 }
 
-func RemoveItem(cart Cart, item string) (Cart, bool) {
+func RemoveItem(cart *Cart, item string) bool {
 	if !passesItemNameCheck(item) {
 		fmt.Println("Update Item failed.")
-		return cart, false
+		return false
 	}
 
-	cartItems := GetItems(cart)
+	cartItems := cart.items
 
-	if _, exists := cartItems[item]; exists {
-		delete(cartItems, item)
-	} else {
+	if _, exists := cartItems[item]; !exists {
 		fmt.Printf("Remove Item failed. Attempted to remove non-existent item %s from the cart\n", item)
-		return cart, false
+		return false
+	} else {
+		delete(cartItems, item)
+		return true		
 	}
-
-	return Cart{
-		id: GetID(cart),
-		customerID: GetCustomerID(cart),
-		items: cartItems,
-	}, true
 }

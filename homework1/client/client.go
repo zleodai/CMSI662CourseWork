@@ -21,28 +21,34 @@ func main() {
 	testCart, sucess := cart.NewCart("Abc12345de-Q")
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "apple", 5)
+	sucess = cart.AddItem(&testCart, "apple", 5)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "banana", 10)
+	sucess = cart.UpdateItem(&testCart, "apple", 10)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "potato", 12)
+	sucess = cart.AddItem(&testCart, "banana", 10)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "broccoli", 3)
+	sucess = cart.AddItem(&testCart, "potato", 12)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "milk", 1)
+	sucess = cart.AddItem(&testCart, "broccoli", 3)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "eggs", 1)
+	sucess = cart.AddItem(&testCart, "milk", 1)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "beef", 2)
+	sucess = cart.AddItem(&testCart, "eggs", 1)
 	if !sucess { return }
 
-	testCart, sucess = cart.AddItem(testCart, "bread", 3)
+	sucess = cart.AddItem(&testCart, "beef", 2)
+	if !sucess { return }
+
+	sucess = cart.AddItem(&testCart, "bread", 3)
+	if !sucess { return }
+
+	sucess = cart.RemoveItem(&testCart, "bread")
 	if !sucess { return }
 	
 	logCart(testCart)
