@@ -1,0 +1,4 @@
+Flask>=3.0
+Flask-WTF>=1.2
+passlib>=1.7
+PyJWT>=2.8

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% set page_title = title %}
+{% set title = page_title ~ " | Crystal Vault" %}
+
+{% block content %}
+<section class="error-panel">
+  <p class="eyebrow">Request status</p>
+  <h1>{{ page_title }}</h1>
+  <p class="lede">{{ message }}</p>
+  <a class="button-link secondary" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+</section>
+{% endblock %}

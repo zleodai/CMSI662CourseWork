@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% set title = "Login | Crystal Vault" %}
+
+{% block content %}
+<section class="auth-panel">
+  <div>
+    <p class="eyebrow">Secure Web App Lab</p>
+    <h1>Crystal Vault</h1>
+  </div>
+
+  {% if error %}
+  <p class="alert">{{ error }}</p>
+  {% endif %}
+
+  <form class="form-stack" method="post" action="{{ url_for('login') }}">
+    {# prevents csrf with token #}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>
+      Email
+      <input type="text" name="email" inputmode="email" autocomplete="username" required>
+    </label>
+    <label>
+      Password
+      <input type="password" name="password" autocomplete="current-password" required>
+    </label>
+    <button type="submit">Login</button>
+  </form>
+
+  <p class="form-note">Need a vault? <a href="{{ url_for('register_form') }}">Create an account</a>.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% set title = "Transfer | Crystal Vault" %}
+
+{% block content %}
+<section class="transfer-panel">
+  <div>
+    <p class="eyebrow">Crystal routing</p>
+    <h1>Transfer crystals</h1>
+  </div>
+
+  {% if error %}
+  <p class="alert">{{ error }}</p>
+  {% endif %}
+
+  <form class="form-stack" method="post" action="{{ url_for('transfer') }}">
+    {# prevents csrf with token #}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    {% if vault %}
+    <div class="vault-summary">
+      <span class="crystal" aria-hidden="true"></span>
+      <div>
+        <span>From vault {{ vault.id }}</span>
+        <strong>{{ vault.balance }} crystals</strong>
+      </div>
+    </div>
+    {% endif %}
+
+    <label>
+      Recipient email
+      <input
+        name="recipient"
+        type="text"
+        inputmode="email"
+        value="{{ values.recipient or '' }}"
+        required>
+    </label>
+
+    <label>
+      Amount
+      <input
+        name="amount"
+        inputmode="numeric"
+        pattern="[0-9]+"
+        value="{{ values.amount or '' }}"
+        required>
+    </label>
+
+    <div class="warning-box">
+      Crystals leave your vault immediately and can only be returned by another transfer.
+    </div>
+
+    <label class="check-row">
+      <input
+        type="checkbox"
+        name="confirm_transfer"
+        value="yes"
+        {% if values.confirm_transfer == "yes" %}checked{% endif %}
+        required>
+      I understand and want to transfer these crystals.
+    </label>
+
+    <button type="submit" {% if not vault %}disabled{% endif %}>Confirm transfer</button>
+  </form>
+</section>
+{% endblock %}

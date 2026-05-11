@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set title = "Dashboard | Crystal Vault" %}
+
+{% block content %}
+<section class="dashboard-hero">
+  <div>
+    <p class="eyebrow">Signed in as {{ email }}</p>
+    <h1>Your crystal vault</h1>
+  </div>
+  <a class="button-link" href="{{ url_for('transfer_form') }}">Transfer crystals</a>
+</section>
+
+{% if transferred %}
+<div class="success-burst" role="status">
+  <span class="sparkle" aria-hidden="true"></span>
+  Transfer complete
+  <span class="sparkle delay" aria-hidden="true"></span>
+</div>
+{% endif %}
+
+<section class="vault-grid" aria-label="Crystal vault account">
+  {% if vault %}
+  <article class="vault-card">
+    <span class="crystal" aria-hidden="true"></span>
+    <div>
+      <h2>Vault {{ vault.id }}</h2>
+      <p class="balance">{{ vault.balance }} crystals</p>
+    </div>
+    <a href="{{ url_for('details') }}">Details</a>
+  </article>
+  {% else %}
+  <p class="empty-state">No vaults found.</p>
+  {% endif %}
+</section>
+{% endblock %}

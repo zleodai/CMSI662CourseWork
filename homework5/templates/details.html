@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% set title = "Vault " ~ account_number ~ " | Crystal Vault" %}
+
+{% block content %}
+<section class="detail-panel">
+  <p class="eyebrow">Signed in as {{ user }}</p>
+  <h1>Vault {{ account_number }}</h1>
+  <div class="balance-ring">
+    <span class="crystal large" aria-hidden="true"></span>
+    <p>{{ balance }}</p>
+    <span>crystals</span>
+  </div>
+  <a class="button-link secondary" href="{{ url_for('dashboard') }}">Back to dashboard</a>
+</section>
+{% endblock %}

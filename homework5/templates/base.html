@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title or "Crystal Vault" }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Crystal Vault</span>
+        </a>
+        {% if email or user %}
+        <nav class="nav-links" aria-label="Primary">
+          <a href="{{ url_for('dashboard') }}">Dashboard</a>
+          <a href="{{ url_for('transfer_form') }}">Transfer</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </nav>
+        {% endif %}
+      </header>
+
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>
