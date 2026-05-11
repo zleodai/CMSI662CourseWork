@@ -24,9 +24,11 @@
     <span class="crystal" aria-hidden="true"></span>
     <div>
       <h2>Vault {{ vault.id }}</h2>
-      <p class="balance">{{ vault.balance }} crystals</p>
+      <p class="balance">
+        <span class="count-glow">{{ vault.balance }}</span>
+        crystals
+      </p>
     </div>
-    <a href="{{ url_for('details') }}">Details</a>
   </article>
   {% else %}
   <p class="empty-state">No vaults found.</p>

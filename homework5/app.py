@@ -134,21 +134,6 @@ def dashboard():
     )
 
 
-@app.route("/details", methods=['GET'])
-def details():
-    if not require_login():
-        return render_template("login.html")
-    vault = get_vault(g.user)
-    if vault is None:
-        abort(404)
-    # prevents users from viewing another vault by changing the url
-    return render_template(
-        "details.html",
-        user=g.user,
-        account_number=vault["id"],
-        balance=vault["balance"])
-
-
 @app.route("/transfer", methods=["GET"])
 def transfer_form():
     if not require_login():

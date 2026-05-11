@@ -281,7 +281,21 @@ button:disabled {
   font-weight: 800;
 }
 
+.count-glow {
+  position: relative;
+  display: inline-block;
+  color: var(--teal-dark);
+  animation: count-pop 900ms ease-out both, count-shimmer 2.8s ease-in-out infinite;
+}
+
+.count-glow.big {
+  color: var(--ink);
+  text-shadow: 0 8px 28px rgba(5, 122, 118, 0.22);
+}
+
 .balance-ring {
+  position: relative;
+  overflow: hidden;
   display: grid;
   justify-items: center;
   gap: 8px;
@@ -290,6 +304,19 @@ button:disabled {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fbfffc;
+}
+
+.balance-ring::before {
+  content: "";
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 180deg, transparent 0deg, rgba(116, 212, 202, 0.24) 70deg, transparent 140deg);
+  animation: ring-sweep 5s linear infinite;
+}
+
+.balance-ring > * {
+  position: relative;
+  z-index: 1;
 }
 
 .balance-ring p {
@@ -357,6 +384,28 @@ button:disabled {
   animation-delay: 320ms;
 }
 
+.orbit {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 18px rgba(217, 154, 24, 0.55);
+  opacity: 0.85;
+}
+
+.sparkle-one {
+  animation: float-one 4s ease-in-out infinite;
+}
+
+.sparkle-two {
+  animation: float-two 4.6s ease-in-out infinite;
+}
+
+.sparkle-three {
+  animation: float-three 5.2s ease-in-out infinite;
+}
+
 .empty-state {
   color: var(--muted);
 }
@@ -393,6 +442,71 @@ button:disabled {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+@keyframes count-pop {
+  from {
+    transform: translateY(8px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes count-shimmer {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes ring-sweep {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes float-one {
+  0%,
+  100% {
+    transform: translate(-78px, -18px) scale(0.9);
+  }
+  50% {
+    transform: translate(-52px, -48px) scale(1.2);
+  }
+}
+
+@keyframes float-two {
+  0%,
+  100% {
+    transform: translate(82px, -8px) scale(1);
+  }
+  50% {
+    transform: translate(54px, 34px) scale(0.8);
+  }
+}
+
+@keyframes float-three {
+  0%,
+  100% {
+    transform: translate(-18px, 56px) scale(0.75);
+  }
+  50% {
+    transform: translate(28px, 40px) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .count-glow,
+  .balance-ring::before,
+  .orbit {
+    animation: none;
   }
 }
 
